@@ -23,14 +23,18 @@ wait_for() {
   command="$*"
   for i in `seq $WAITFOR_TIMEOUT` ; do
     curl --silent --max-time 2 $WAITFOR_HOST:$WAITFOR_PORT 2>&1 1>/dev/null
-    
+
     result=$?
     if [ $result -eq 0 ] ; then
       if [ -n "$command" ] ; then
         exec $command
       fi
+
+	  echo "$WAITFOR_HOST:$WAITFOR_PORT Ready."
       exit 0
     fi
+
+	echo "$(date) [$result] Waiting for $WAITFOR_HOST:$WAITFOR_PORT"
     sleep 1
   done
   echo "Operation timed out" >&2
